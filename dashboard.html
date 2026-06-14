@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>தினசரி திருக்குர்ஆன் நினைவுறுத்தல் - Neon Genie Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Noto+Serif+Tamil:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Serif Tamil', serif;
+            background-color: #050c08; /* Deep dark obsidian green background */
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+        }
+
+        /* Intense Neon Green Glow Effects */
+        .neon-border {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3), inset 0 0 15px rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+        }
+        .neon-text-green {
+            text-shadow: 0 0 8px rgba(34, 197, 94, 0.8), 0 0 20px rgba(34, 197, 94, 0.4);
+        }
+        .neon-text-gold {
+            text-shadow: 0 0 8px rgba(234, 179, 8, 0.7);
+        }
+
+        /* Floating Genie Lamp Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating-lamp {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Smoke Canvas Positioning */
+        #smokeCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen max-h-screen overflow-hidden flex flex-col justify-between text-stone-100 antialiased relative selection:bg-green-500/30">
+
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-green-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <canvas id="smokeCanvas"></canvas>
+
+    <header class="w-full py-3 text-center border-b border-green-950 bg-black/40 backdrop-blur-sm z-10 flex-shrink-0">
+        <h1 class="text-xl md:text-2xl font-bold tracking-wide text-green-400 neon-text-green">
+            இன்றைய திருக்குர்ஆன் வசனம்
+        </h1>
+        <p class="text-[10px] uppercase tracking-widest text-green-600 font-sans mt-0.5">Automatically updates every day</p>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-2 h-[calc(100vh-130px)] flex flex-col justify-center items-center w-full z-10 overflow-hidden">
+        
+        <div class="w-full flex justify-between items-center mb-3 px-4 md:px-12 flex-shrink-0">
+            <div id="left-lamp" class="floating-lamp text-2xl md:text-4xl text-green-400 opacity-80 filter drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]">🪔</div>
+            <span class="text-[10px] md:text-xs uppercase tracking-widest text-yellow-500 font-semibold neon-text-gold">Dora Bujji</span>
+            <div id="right-lamp" class="floating-lamp text-2xl md:text-4xl text-green-400 opacity-80 filter drop-shadow-[0_0_8px_rgba(34,197,94,0.6)]" style="animation-delay: 2s;">🪔</div>
+        </div>
+
+        <div class="w-full max-h-[80%] bg-black/60 backdrop-blur-md neon-border p-5 md:p-8 rounded-3xl text-center relative flex flex-col justify-between overflow-hidden">
+            
+            <div class="overflow-y-auto custom-scrollbar space-y-4 pr-1 my-auto">
+                <div class="arabic-text text-xl md:text-2xl text-green-300 tracking-wide opacity-90">
+                    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                </div>
+
+                <div class="space-y-3">
+                    <p id="arabic-display" class="arabic-text text-xl md:text-2xl text-green-400 tracking-wide leading-loose neon-text-green">
+                        </p>
+
+                    <p id="tamil-display" class="text-base md:text-xl font-medium text-white leading-relaxed">
+                        </p>
+                </div>
+            </div>
+
+            <div class="w-24 h-[2px] bg-green-500 shadow-[0_0_8px_#22c55e] mx-auto my-4 flex-shrink-0"></div>
+
+            <div id="reference-display" class="text-xs font-semibold text-yellow-500 tracking-widest neon-text-gold flex-shrink-0">
+                </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-2.5 text-center text-[11px] text-green-700 bg-black/60 border-t border-green-950 z-10 flex-shrink-0">
+        <p>&copy; Created By : Praveen</p>
+    </footer>
+
+    <script>
+        // Custom Quotes List
+        const myCustomQuotesList = [
+{
+                arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", 
+                tamil: "நிச்சயமாக, ஒவ்வொரு சிரமத்துடனும் ஒரு எளிமை இருக்கிறது.", 
+                reference: "அல்குர்ஆன் 94:5"
+            },
+            {
+                arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", 
+                tamil: "நிச்சயமாக அல்லாஹ் பொறுமையாளர்களுடன் இருக்கிறான்.", 
+                reference: "அல்குர்ஆன் 2:153"
+            },
+            {
+                arabic: "وَمَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", 
+                tamil: "அல்லாஹ்வை முற்றிலும் நம்பியிருப்பவருக்கு அவரே போதுமானவர்.", 
+                reference: "அல்குர்ஆன் 65:3"
+            },
+            {
+                arabic: "لَا تَقْنَطُوا مِنْ رَحْمَةِ اللَّهِ", 
+                tamil: "அல்லாஹ்வின் பேரருளில் நீங்கள் நம்பிக்கையிழக்க வேண்டாம்.", 
+                reference: "அல்குர்ஆன் 39:53"
+            },
+
+            {
+                arabic: "وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ",
+                tamil: "அல்லாஹ் நன்மை செய்பவர்களை நேசிக்கிறான்.",
+                reference: "அல்குர்ஆன் 3:134"
+            },
+            {
+                arabic: "اذْكُرُونِي أَذْكُرْكُمْ",
+                tamil: "நீங்கள் என்னை நினைவுகூருங்கள்; நானும் உங்களை நினைவுகூருவேன்.",
+                reference: "அல்குர்ஆன் 2:152"
+            },
+            {
+                arabic: "إِنَّ اللَّهَ غَفُورٌ رَّحِيمٌ",
+                tamil: "நிச்சயமாக அல்லாஹ் மன்னிப்பவனும் அருளாளனும் ஆவான்.",
+                reference: "அல்குர்ஆன் 2:173"
+            },
+            {
+                arabic: "قُرْآن 4",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (4)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 5",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (5)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 6",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (6)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 7",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (7)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 8",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (8)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 9",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (9)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 10",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (10)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 11",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (11)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 12",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (12)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 13",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (13)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 14",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (14)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 15",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (15)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 16",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (16)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 17",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (17)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 18",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (18)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 19",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (19)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 20",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (20)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 21",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (21)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 22",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (22)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 23",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (23)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 24",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (24)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 25",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (25)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 26",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (26)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 27",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (27)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 28",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (28)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 29",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (29)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 30",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (30)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 31",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (31)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 32",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (32)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 33",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (33)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 34",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (34)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 35",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (35)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 36",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (36)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 37",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (37)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 38",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (38)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 39",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (39)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 40",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (40)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 41",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (41)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 42",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (42)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 43",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (43)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 44",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (44)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 45",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (45)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 46",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (46)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 47",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (47)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 48",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (48)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 49",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (49)",
+                reference: "அல்குர்ஆன்"
+            },
+            {
+                arabic: "قُرْآن 50",
+                tamil: "அல்லாஹ்வின் வழிகாட்டுதலைப் பின்பற்றுங்கள். (50)",
+                reference: "அல்குர்ஆன்"
+            }
+        ];
+
+        function loadDailyQuote() {
+            const today = new Date();
+            const dayCounter = Math.floor(today.getTime() / (1000 * 60 * 60 * 24));
+            
+            const quoteIndex = dayCounter % myCustomQuotesList.length;
+            const todaysQuote = myCustomQuotesList[quoteIndex];
+
+            document.getElementById('arabic-display').innerText = todaysQuote.arabic;
+            document.getElementById('tamil-display').innerText = `"${todaysQuote.tamil}"`;
+            document.getElementById('reference-display').innerText = todaysQuote.reference;
+        }
+
+        // --- Smoke Simulation Engine ---
+        const canvas = document.getElementById('smokeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 20 + 10;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * -1.2 - 0.4; 
+                this.maxLife = Math.random() * 100 + 80;
+                this.life = this.maxLife;
+                this.opacity = Math.random() * 0.25 + 0.1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.size += 0.15; 
+                this.life--;
+            }
+
+            draw() {
+                let currentOpacity = (this.life / this.maxLife) * this.opacity;
+                ctx.beginPath();
+                let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+                gradient.addColorStop(0, `rgba(34, 197, 94, ${currentOpacity})`); 
+                gradient.addColorStop(0.5, `rgba(22, 163, 74, ${currentOpacity * 0.4})`); 
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); 
+                
+                ctx.fillStyle = gradient;
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function getLampPositions() {
+            const leftLamp = document.getElementById('left-lamp').getBoundingClientRect();
+            const rightLamp = document.getElementById('right-lamp').getBoundingClientRect();
+            return [
+                { x: leftLamp.left + leftLamp.width / 2, y: leftLamp.top + leftLamp.height / 3 },
+                { x: rightLamp.left + rightLamp.width / 2, y: rightLamp.top + rightLamp.height / 3 }
+            ];
+        }
+
+        function animateSmoke() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (document.getElementById('left-lamp')) {
+                const lamps = getLampPositions();
+                lamps.forEach(lamp => {
+                    if(Math.random() < 0.12) { 
+                        particles.push(new Particle(lamp.x, lamp.y));
+                    }
+                });
+            }
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animateSmoke);
+        }
+
+        window.onload = function() {
+            loadDailyQuote();
+            animateSmoke();
+        };
+    </script>
+</body>
+</html>
